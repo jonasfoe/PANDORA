@@ -45,8 +45,15 @@ The installation process will take care of installing the following dependencies
 Prior to PANDORA installation, you need to first activate MODELLER's license. Please request MODELLER license at: https://salilab.org/modeller/registration.html
 
 Replace XXXX with your MODELLER License key and run the command:
+
 ```
 alias KEY_MODELLER='XXXX'
+```
+
+you can then intall MODELLER through conda
+
+```
+conda install -c salilab modeller
 ```
 
 
@@ -67,13 +74,13 @@ Enter the cloned directory and then install the dependencies!
 ```
 cd PANDORA
 pip install -e .
-
 ```
 #### 4. (Optional) Install NetMHCpan and/or NetMHCIIpan
 
 PANDORA lets the user if he wants to predict peptide's anchor residues instead of using conventional predefined anchor residues.
 In that case you need to install NetMHCpan (for peptide:MHC class I) and/or NetMHCIIpan (for peptide:MHC class II).
 To install, you can simply run:
+
 ```
 python netMHCpan_install.py
 ```
