@@ -15,6 +15,7 @@ class Pandora:
         self.template = template
         self.database = database
         self.output_dir = output_dir
+        self.results = None
 
         if database is None and template is None:
             raise Exception('Provide a Database object so Pandora can find the best suitable template structure for '
@@ -405,7 +406,27 @@ class Pandora:
             self.__log(self.target.id, self.template.id, 'Successfully modelled %s models' %(n_homology_models*n_loop_models))
 
 
+    def __repr__(self):
+        out = f"Target id: {self.target.id}\n" \
+              f"\tTarget MHC Class: {self.target.MHC_class}\n" \
+              f"\tTarget Allele:    {self.target.allele_type}\n" \
+              f"\tTarget Peptide:   {self.target.peptide}\n" \
+              f"\tTarget Anchors:   {[i for i in self.target.anchors]}\n\n" \
+              f"Selected template structure: {[i.id for i in self.template] if type(self.template) is list else self.template.id}\n" \
+              f"\tTemplates Allele: {[i.allele_type for i in self.template] if type(self.template) is list else self.template.allele_type}\n" \
+              f"\tTemplates Peptide: {[i.peptide for i in self.template] if type(self.template) is list else self.template.peptide}\n" \
+              f"\tTemplates Anchors: {[i.anchors for i in self.template] if type(self.template) is list else self.template.anchors}\n"
 
+        if self.results is not None:
+            out = out + f"\tModel\t\t\t\tMolpdf\t\t{'LRMSD' if self.results[0].lrmsd is not None else ''}" \
+                        f"\t\t{'core-LRMSD' if self.results[0].core_lrmsd is not None else ''}\n"
+            for m in self.results:
+                model_name = os.path.basename(m.model_path).replace('.pdb', '')
+                out = out + f"\t{model_name}\t\t{float(m.molpdf):.4f}\t\t" \
+                            f"{round(m.lrmsd,4) if m.lrmsd is not None else ''}" \
+                            f"\t\t{round(m.core_lrmsd,4) if m.core_lrmsd is not None else ''}\n"
+
+        return out
 
 
 
