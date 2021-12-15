@@ -7,14 +7,11 @@ import traceback
 #import numpy as np
 # from copy import deepcopy
 
-
-
 # target = y.target
 # model_path = y.model_path
 # output_dir = PANDORA.PANDORA_data
 # pdb = deepcopy(y.pdb)
 # reference_pdb = '/Users/derek/Dropbox/Master_Bioinformatics/Internship/PANDORA/PANDORA_files/data/PDBs/pMHCII/1HXY.pdb'
-
 
 
 class Model:
@@ -37,6 +34,9 @@ class Model:
         self.molpdf = molpdf
         self.dope = dope
         self.output_dir = output_dir
+        self.lrmsd = None
+        self.core_lrmsd = None
+        self.flanking_lrmsd = None
 
         # Check if the user gave either the path to the model pdb or the pdb itself.
         if self.model_path == '' and not pdb:
@@ -45,14 +45,11 @@ class Model:
         if not pdb:
             self.pdb = PDBParser(QUIET=True).get_structure(self.target.id, self.model_path)
 
-
     def calc_LRMSD(self, reference_pdb, atoms = ['C', 'CA', 'N', 'O']):
         ''' Calculate the L-RMSD between the decoy and reference structure (ground truth).
             This function requires the pdb2sql module for L-RMSD calculation.
-
         Args:
             reference_pdb: Bio.PDB object or path to pdb file
-
         Returns: (float) L-RMSD
         '''
 
@@ -73,29 +70,34 @@ class Model:
         #M_lzone = list(range(4,73))
         #N_lzone = list(range(10,80))
 
+
+        start_dir = os.getcwd()
+        os.chdir(self.output_dir)
+
         # pdb2sql needs 1 big chain and 1 ligand chain with correct numbering, for MHCII, this means merging the chains.
         model_name = self.model_path.split('/')[-1].split('.')[1]
         decoy_path, ref_path = homogenize_pdbs(self.pdb, ref, self.output_dir, model_name)
 
-        start_dir = os.getcwd()
-        os.chdir(self.output_dir)
+
         # Produce lzone file for the l-rmsd calculation
         #lzone = get_Gdomain_lzone(ref_path, self.output_dir, self.target.MHC_class)
         #TODO: check if it's MHC I or II and adapt for chain M and N
         # Get decoy structure to superpose
         #decoy_db = pdb2sql(decoy_path)
         #decoy_lzone = np.asarray(decoy_db.get('x,y,z', resSeq=M_lzone))
-        
+
         # Get ref structure to superpose
         #ref_db = pdb2sql(ref_path)
         #ref_lzone = np.asarray(ref_db.get('x,y,z', resSeq=M_lzone))
-        
+
         # Align the G domains
         #superpose.superpose_selection()
-        
+
         try:
             # Calculate l-rmsd between decoy and reference with pdb2sql
             sim = StructureSimilarity(decoy_path, ref_path)
+            # sim = StructureSimilarity(f'{self.target.id}_decoy.pdb', f'{self.target.id}_ref.pdb')
+            # sim = StructureSimilarity(decoy_path.split('/')[-1], ref_path.split('/')[-1])
             #self.lrmsd = sim.compute_lrmsd_fast(method='svd', name=atoms, lzone = lzone)
             self.lrmsd = sim.compute_lrmsd_pdb2sql(exportpath=None, method='svd', name = atoms)
         except:
@@ -110,10 +112,8 @@ class Model:
 
     def calc_Core_LRMSD(self, reference_pdb, atoms = ['C', 'CA', 'N', 'O']):
         ''' Calculate the L-RMSD between the decoy and reference structure (ground truth)
-
         Args:
             reference_pdb: Bio.PDB object or path to pdb file
-
         Returns: (float) L-RMSD
         '''
 
@@ -126,20 +126,23 @@ class Model:
             ref = reference_pdb
 
         # Define file names as variables
-        decoy_path = '%s/%s_decoy.pdb' % (self.output_dir, self.target.id)
-        ref_path = '%s/%s_ref.pdb' % (self.output_dir, self.target.id)
-
-        # pdb2sql needs 1 big chain and 1 ligand chain with correct numbering, for MHCII, this means merging the chains.
-        homogenize_pdbs(self.pdb, ref, self.output_dir, self.target.id, anchors = self.target.anchors)
+        # decoy_path = '%s/%s_decoy.pdb' % (self.output_dir, self.target.id)
+        # ref_path = '%s/%s_ref.pdb' % (self.output_dir, self.target.id)
 
         start_dir = os.getcwd()
         os.chdir(self.output_dir)
+
+        # pdb2sql needs 1 big chain and 1 ligand chain with correct numbering, for MHCII, this means merging the chains.
+        decoy_path, ref_path = homogenize_pdbs(self.pdb, ref, self.output_dir, self.target.id, anchors=self.target.anchors)
+
         # Produce lzone file for the l-rmsd calculation
         #lzone = get_Gdomain_lzone('%s/%s_ref.pdb' %(self.output_dir, self.target.id), self.output_dir, self.target.MHC_class)
         # Get decoy structure to superpose
         #decoy_db = psb2sql()
-        
+
         # Calculate l-rmsd between decoy and reference with pdb2sql
+        # sim = StructureSimilarity(decoy_path, ref_path)
+        # sim = StructureSimilarity(decoy_path.split('/')[-1], ref_path.split('/')[-1])
         sim = StructureSimilarity(decoy_path, ref_path)
         self.core_lrmsd = sim.compute_lrmsd_pdb2sql(exportpath=None, method='svd', name=atoms)
 
@@ -151,10 +154,8 @@ class Model:
 
     def calc_flanking_LRMSD(self, reference_pdb, atoms=['C', 'CA', 'N', 'O']):
         ''' Calculate the L-RMSD between the decoy and reference structure (ground truth)
-
         Args:
             reference_pdb: Bio.PDB object or path to pdb file
-
         Returns: (float) L-RMSD
         '''
 
@@ -167,30 +168,37 @@ class Model:
             ref = reference_pdb
 
         # Define file names as variables
-        decoy_path = '%s/%s_decoy.pdb' % (self.output_dir, self.target.id)
-        ref_path = '%s/%s_ref.pdb' % (self.output_dir, self.target.id)
+        # decoy_path = '%s/%s_decoy.pdb' % (self.output_dir, self.target.id)
+        # ref_path = '%s/%s_ref.pdb' % (self.output_dir, self.target.id)
         #
         # decoy_path = '%s/%s_decoy.pdb' % (output_dir, target.id)
         # ref_path = '%s/%s_ref.pdb' % (output_dir, target.id)
 
+        start_dir = os.getcwd()
+        os.chdir(self.output_dir)
+
         # pdb2sql needs 1 big chain and 1 ligand chain with correct numbering, for MHCII, this means merging the chains.
-        homogenize_pdbs(self.pdb, ref, self.output_dir, self.target.id, anchors=self.target.anchors, flanking=True)
+        decoy_path, ref_path = homogenize_pdbs(self.pdb, ref, self.output_dir, self.target.id,
+                                               anchors=self.target.anchors, flanking=True)
 
         # homogenize_pdbs(pdb, ref, output_dir, target.id, anchors=target.anchors, flanking=True)
 
-        os.chdir(self.output_dir)
+
         # Produce lzone file for the l-rmsd calculation
         # lzone = get_Gdomain_lzone('%s/%s_ref.pdb' %(self.output_dir, self.target.id), self.output_dir, self.target.MHC_class)
         # Get decoy structure to superpose
         # decoy_db = psb2sql()
 
         # Calculate l-rmsd between decoy and reference with pdb2sql
+        # sim = StructureSimilarity(decoy_path, ref_path)
+        # sim = StructureSimilarity(decoy_path.split('/')[-1], ref_path.split('/')[-1])
         sim = StructureSimilarity(decoy_path, ref_path)
         self.flanking_lrmsd = sim.compute_lrmsd_pdb2sql(exportpath=None, method='svd', name=atoms)
 
         # remove intermediate files
         os.system('rm %s %s' % (decoy_path, ref_path))
-        os.chdir(os.path.dirname(PANDORA.PANDORA_path))
+        os.chdir(start_dir)
+        # os.chdir(os.path.dirname(PANDORA.PANDORA_path))
 
 
 def merge_chains(pdb):
@@ -248,6 +256,7 @@ def renumber(pdb):
 # anchors=target.anchors
 # flanking=True
 
+
 def homogenize_pdbs(decoy, ref, output_dir, target_id = 'MHC', anchors =False, flanking=False):
     ''' Make sure that the decoy and reference structure have the same structure sequences.
 
@@ -299,14 +308,17 @@ def homogenize_pdbs(decoy, ref, output_dir, target_id = 'MHC', anchors =False, f
     decoy_path = '%s/%s_decoy.pdb' % (output_dir, target_id)
     io = PDBIO()
     io.set_structure(decoy)
-    io.save('%s/%s_decoy.pdb' % (output_dir, target_id))
+    # io.save('%s/%s_decoy.pdb' % (output_dir, target_id))
+    io.save(f'{target_id}_decoy.pdb')
 
     ref_path = '%s/%s_ref.pdb' % (output_dir, target_id)
     io = PDBIO()
     io.set_structure(ref)
-    io.save('%s/%s_ref.pdb' % (output_dir, target_id))
+    # io.save('%s/%s_ref.pdb' % (output_dir, target_id))
+    io.save(f'{target_id}_ref.pdb')
 
     return decoy_path, ref_path
+
 
 def get_Gdomain_lzone(ref_pdb, output_dir, MHC_class):
     """ Produce a lzone file for pdb2sql.
@@ -366,6 +378,7 @@ def get_Gdomain_lzone(ref_pdb, output_dir, MHC_class):
             #output.write('fit\n')
     return outfile
 
+
 def remove_C_like_domain(pdb):
     '''Removes the C-like domain from a MHC struture and keeps only the G domain
 
@@ -398,6 +411,30 @@ def remove_C_like_domain(pdb):
                         chain.detach_child(res.id)
 
     return pdb
+
+
+def to_csv(filename, model, db):
+    """ Writes results to a file
+
+    Args:
+        filename: (str) filename to csv file
+        model: (Model) Model object
+        db: (Database) Database object to find info of the template structure
+
+    """
+    # If the outfile doesn't exist, create it
+    if not os.path.isfile(filename):
+        with open(filename, 'w') as f:
+            f.write('Target_ID,Target_peptide,Target_alleles,'
+                    'Template_ID,Template_peptide,Template_alleles,'
+                    'model,molpdf,lrmsd,core_lrmsd,flanking_lrmsd\n')
+    # Find template id and write info to file
+    templ_id = model.target.templates[0]
+    with open(filename, 'a') as f:
+        f.write(f"{model.target.id},{model.target.peptide},{';'.join(model.target.allele_type)},"
+                f"{templ_id},{db.MHCII_data[templ_id].peptide},{';'.join(db.MHCII_data[templ_id].allele_type)},"
+                f"{model.model_path.split('.')[-2]},{model.molpdf},{model.lrmsd},{model.core_lrmsd},"
+                f"{model.flanking_lrmsd}\n")
 
 #ValueError: Invalid column name lzone. Possible names are
 #['rowID', 'serial', 'name', 'altLoc', 'resName', 'chainID', 'resSeq',
