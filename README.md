@@ -40,12 +40,13 @@ The following installations are required to start PANDORA installation:
 The installation process will take care of installing the following dependencies (see [Installation](#installation)), no need to install them yourself.
 
 - [BioPython](https://anaconda.org/conda-forge/biopython)
-<!-- - [muscle](https://anaconda.org/bioconda/muscle) -->
-<!-- - [Modeller](https://anaconda.org/salilab/modeller) 9.23 or later -->
+- [muscle](https://anaconda.org/bioconda/muscle)
+- [Modeller](https://anaconda.org/salilab/modeller) 9.23 or later
 - [pdb2sql](https://github.com/DeepRank/pdb2sql) (Optional, only for RMSD calculation)
-- [NetMHCpan](https://services.healthtech.dtu.dk/software.php) (Optional, only if user wants to predict peptide:MHC class I anchors)
-- [NetMHCIIpan](https://services.healthtech.dtu.dk/software.php) (Optional, only if user wants to predict peptide:MHC class II anchors)
 
+The following dependencies can be used to predict peptide anchor postisions, but have to be manually installed:
+- [NetMHCpan](https://services.healthtech.dtu.dk/software.php) 
+- [NetMHCIIpan](https://services.healthtech.dtu.dk/software.php) 
 
 ## Installation
 ### Conda Installation (suggested)
@@ -66,7 +67,7 @@ Install with conda:
 conda install -c csb-nijmegen csb-pandora -c salilab -c bioconda
 ```
 
-## GitHub / Pypi installation
+### GitHub / Pypi installation
 
 #### 1. Install Modeller:
 Prior to PANDORA installation, you need to first activate MODELLER's license. Please request MODELLER license at: https://salilab.org/modeller/registration.html
@@ -90,15 +91,23 @@ conda install -c bioconda muscle
 
 #### 3. Install PANDORA
 
+Pypi installation:
+```
+pip install csb-pandora
+```
+
+*Alternatively*, GitHub installation:
+
 Clone the repository:
+
 ```
 git clone https://github.com/X-lab-3D/PANDORA.git
 ```
 Enter the cloned directory and then install the dependencies!
+
 ```
 cd PANDORA
 pip install -e .
-
 ```
 
 

@@ -13,19 +13,24 @@ with open(os.path.join(here, 'PANDORA', '__version__.py')) as f:
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
+PACKAGES=[
+        "PANDORA"
+]
+
 setup(
-    name='PANDORA',
+    name='csb_pandora',
     version=version['__version__'],
     description='Model peptide-MHC I complexes using anchor distance restrains in MODELLER',
     long_description=readme + '\n\n',
     long_description_content_type='text/markdown',
-    author='Farzaneh Meimandi Parizi, Dario Marzella, Li Xue',
+    author='Dario F. Marzella, Farzaneh M. Parizi, Derek van Tilborg, Li Xue',
     url='https://github.com/X-lab-3D/PANDORA/tree/master',
     project_urls={
         'Source Code': 'https://github.com/X-lab-3D/PANDORA/tree/master',
         'Issue tracker': 'https://github.com/X-lab-3D/PANDORA/issues'
     },
-    packages=find_packages(),
+    packages=PACKAGES,
+    #packages=find_packages(),
     include_package_data=True,
     license="Apache Software License 2.0",
     keywords='PANDORA',
