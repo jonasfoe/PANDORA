@@ -54,7 +54,7 @@ setup(
 
     extras_require={
         'doc': ['recommonmark', 'sphinx', 'sphinx_rtd_theme'],
-        'test': ['pytest', 'pytest-runner',
+        'test': ['pytest', 'pytest-runner', 'pytest-cov',
                  'coverage', 'coveralls', 'pycodestyle']
     }
 )

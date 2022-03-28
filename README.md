@@ -1,7 +1,7 @@
 # PANDORA
 
 ![Build](https://github.com/X-lab-3D/PANDORA/actions/workflows/main.yml/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/X-lab-3D/PANDORA/badge.svg?branch=master)](https://coveralls.io/github/X-lab-3D/PANDORA?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/X-lab-3D/PANDORA/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/X-lab-3D/PANDORA?branch=master)
 [![Anaconda-Server Badge](https://anaconda.org/csb-nijmegen/csb-pandora/badges/version.svg)](https://anaconda.org/csb-nijmegen/csb-pandora)
 [![Documentation Status](https://readthedocs.org/projects/csb-pandora/badge/?version=latest)](http://csb-pandora.readthedocs.io/?badge=latest)
 
@@ -73,6 +73,7 @@ conda install -c csb-nijmegen csb-pandora -c salilab -c bioconda
 Prior to PANDORA installation, you need to first activate MODELLER's license. Please request MODELLER license at: https://salilab.org/modeller/registration.html
 
 Replace XXXX with your MODELLER License key and run the command:
+
 ```
 alias KEY_MODELLER='XXXX'
 ```
@@ -135,6 +136,7 @@ Note: generating a database can take more than one hour and a half, so we advice
 PANDORA lets the user if he wants to predict peptide's anchor residues instead of using conventional predefined anchor residues.
 In that case you need to download [NetMHCpan](https://services.healthtech.dtu.dk/cgi-bin/sw_request) (for peptide:MHC class I) and/or [NetMHCIIpan](https://services.healthtech.dtu.dk/cgi-bin/sw_request) (for peptide:MHC class II).
 To install, you can simply run:
+
 ```
 python netMHCpan_install.py
 ```
