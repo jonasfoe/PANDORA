@@ -1,9 +1,36 @@
 # -*- coding: utf-8 -*-
+from os.path import exists
 import os
+import json
 
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
+
+def create_database_folders(data_folder):
+    dirs = [
+            './Databases', f'./Databases/{data_folder}',
+            f'./Databases/{data_folder}/mhcseqs', 
+            f'./Databases/{data_folder}/PDBs',
+            f'./Databases/{data_folder}/PDBs/pMHCI', 
+            f'./Databases/{data_folder}/PDBs/pMHCII',
+            f'./Databases/{data_folder}/PDBs/Bad', 
+            f'./Databases/{data_folder}/PDBs/Bad/pMHCI',
+            f'./Databases/{data_folder}/PDBs/Bad/pMHCII', 
+            f'./Databases/{data_folder}/PDBs/IMGT_retrieved',
+            f'./Databases/{data_folder}/outputs',
+            './test/test_data',
+            './test/test_data/PDBs/Bad',
+            './test/test_data/PDBs/Bad/pMHCI',
+            './test/test_data/PDBs/Bad/pMHCII', 
+            ]
+
+    for D in dirs:
+        try:
+            os.mkdir(D)
+        except OSError:
+            print('Could not make directory: ' + D)
+
 
 # To update the package version number, edit PANDORA/__version__.py
 version = {}
@@ -53,3 +80,14 @@ setup(
                  'coverage', 'coveralls', 'pycodestyle']
     }
 )
+
+#Check if config.json exists
+if exists('config.json'):
+    with open('config.json') as f:
+        data = json.load(f)
+        data_folder = data['data_folder_name']
+else:
+    data_folder = 'default'
+
+# Create the folders for the default database and testing
+create_database_folders(data_folder)

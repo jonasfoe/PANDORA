@@ -148,9 +148,9 @@ PANDORA requires at least these information to generate models:
 Steps:
 A. Load the template database (see installation, point 4)
 
-B. Creating a Template object based on the given target information
+B. Creating a Target object based on the given target information
 
-C. Generating *n* number of pMHC models (Default *n=20*)
+C. Generating *n_loop_models* number of pMHC models (Default *n_loop_models=20*)
 
 Please note that you can specify output directory yourself, otherwise will be generated in a default directory
 ```python
@@ -164,7 +164,7 @@ db = Database.load()
 
 ## B. Create Target object
 target = PMHC.Target(id = 'myTestCase',
-    allele_type = 'HLA-A*0201',
+    allele_type = 'HLA-A*02:01',
     peptide = 'LLFGYPVYV',
     anchors = [2,9])
 
