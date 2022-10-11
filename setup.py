@@ -2,27 +2,30 @@
 from os.path import exists
 import os
 import json
+from pathlib import Path
+
 
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-def create_database_folders(data_folder):
+def create_database_folders(installation_folder):
     dirs = [
-            './Databases', f'./Databases/{data_folder}',
-            f'./Databases/{data_folder}/mhcseqs', 
-            f'./Databases/{data_folder}/PDBs',
-            f'./Databases/{data_folder}/PDBs/pMHCI', 
-            f'./Databases/{data_folder}/PDBs/pMHCII',
-            f'./Databases/{data_folder}/PDBs/Bad', 
-            f'./Databases/{data_folder}/PDBs/Bad/pMHCI',
-            f'./Databases/{data_folder}/PDBs/Bad/pMHCII', 
-            f'./Databases/{data_folder}/PDBs/IMGT_retrieved',
-            f'./Databases/{data_folder}/outputs',
-            './test/test_data',
-            './test/test_data/PDBs/Bad',
-            './test/test_data/PDBs/Bad/pMHCI',
-            './test/test_data/PDBs/Bad/pMHCII', 
+            f'{installation_folder}/Databases', 
+            f'{installation_folder}/Databases/default',
+            f'{installation_folder}/Databases/default/mhcseqs', 
+            f'{installation_folder}/Databases/default/PDBs',
+            f'{installation_folder}/Databases/default/PDBs/pMHCI', 
+            f'{installation_folder}/Databases/default/PDBs/pMHCII',
+            f'{installation_folder}/Databases/default/PDBs/Bad', 
+            f'{installation_folder}/Databases/default/PDBs/Bad/pMHCI',
+            f'{installation_folder}/Databases/default/PDBs/Bad/pMHCII', 
+            f'{installation_folder}/Databases/default/PDBs/IMGT_retrieved',
+            f'{installation_folder}/Databases/default/outputs',
+            f'{installation_folder}/test/test_data',
+            f'{installation_folder}/test/test_data/PDBs/Bad',
+            f'{installation_folder}/test/test_data/PDBs/Bad/pMHCI',
+            f'{installation_folder}/test/test_data/PDBs/Bad/pMHCII', 
             ]
 
     for D in dirs:
@@ -82,12 +85,8 @@ setup(
 )
 
 #Check if config.json exists
-if exists('config.json'):
-    with open('config.json') as f:
-        data = json.load(f)
-        data_folder = data['data_folder_name']
-else:
-    data_folder = 'default'
+user_folder_path = Path(__file__).parents[0]
+#data_folder = f'{user_folder_path}/Databases/default'
 
 # Create the folders for the default database and testing
-create_database_folders(data_folder)
+create_database_folders(user_folder_path)
