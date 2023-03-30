@@ -212,6 +212,11 @@ def cmd_run_wrapper():
     )
 
     parser.add_argument(
+        '-t','--template-column', type=int,
+        help='0-index column containing the template ID to be used for each case.',
+    )
+
+    parser.add_argument(
         '-l','--loop-models', default=20, type=int,
         help='Number of loop models to produce',
     )
@@ -253,6 +258,6 @@ def cmd_run_wrapper():
         MHC_class=args.mhc_class, delimiter=args.delimiter,
         IDs_col=args.targets_id_column, peptides_col=args.peptides_column,
         allele_name_col=args.allele_name_column, anchors_col=args.anchors_column,
-        n_loop_models=args.loop_models, collective_output_dir=args.output_path,
-        clip_C_domain=args.clip_C_domain, restraints_stdev=args.restraints_stdev,
-        use_netmhcpan=args.use_netmhcpan)
+        template_col=args.template_column, n_loop_models=args.loop_models, 
+        collective_output_dir=args.output_path, clip_C_domain=args.clip_C_domain,
+        restraints_stdev=args.restraints_stdev, use_netmhcpan=args.use_netmhcpan)
