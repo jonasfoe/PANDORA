@@ -8,6 +8,7 @@ import traceback
 import os
 from PANDORA import Target
 from PANDORA import Pandora
+from PANDORA import Database
 import re
 import random
 import string
@@ -279,8 +280,9 @@ class Wrapper():
 
                     ## Assign template per case
                     if template_col:
+                        db = Database.load()
                         template = row[template_col]
-                        targets[target_id]['template'] = template
+                        targets[target_id]['template'] = db.MHCI_data[template]
                     else:
                         targets[target_id]['template'] = None
 
