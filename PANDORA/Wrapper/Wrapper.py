@@ -139,8 +139,9 @@ class Wrapper():
                                         header=header, IDs_col=IDs_col,
                                         peptides_col=peptides_col, allele_name_col=allele_name_col,
                                         anchors_col=anchors_col, M_chain_col=M_chain_col,
-                                        N_chain_col=N_chain_col,outdir_col=outdir_col,
-                                        start_row=start_row,end_row=end_row)
+                                        N_chain_col=N_chain_col, outdir_col=outdir_col,
+                                        template_col=template_col, start_row=start_row,
+                                        end_row=end_row)
 
         ## Print targets info
         if verbose:
