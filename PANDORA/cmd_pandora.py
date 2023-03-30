@@ -212,7 +212,7 @@ def cmd_run_wrapper():
     )
 
     parser.add_argument(
-        '-t','--template-column', type=int,
+        '-u','--template-column', type=int,
         help='0-index column containing the template ID to be used for each case.',
     )
 
