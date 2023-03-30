@@ -343,13 +343,11 @@ class Pandora:
         # Make sure we're in the root directory
         os.path.dirname(PANDORA.PANDORA_path)
 
-        # Find the best template structure given the Target
-        if self.template==None:
-            try:
-                self.find_template(best_n_templates=best_n_templates, benchmark=benchmark, verbose=verbose)
-            except:
-                self.__log(self.target.id, 'None', 'Could not find a template')
-                raise Exception('Could not find a template')
+        try:
+            self.find_template(best_n_templates=best_n_templates, benchmark=benchmark, verbose=verbose)
+        except:
+            self.__log(self.target.id, 'None', 'Could not find a template')
+            raise Exception('Could not find a template')
 
         print('###############')
         print('TEMPLATE: ', self.template.id)
