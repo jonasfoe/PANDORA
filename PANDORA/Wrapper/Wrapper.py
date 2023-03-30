@@ -280,7 +280,7 @@ class Wrapper():
                     ## Assign template per case
                     if template_col:
                         template = row[template_col]
-                        targets[target_id]['template'] = [template]
+                        targets[target_id]['template'] = template
                     else:
                         targets[target_id]['template'] = None
 
