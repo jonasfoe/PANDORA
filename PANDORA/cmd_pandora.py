@@ -227,7 +227,7 @@ def cmd_run_wrapper():
     )
 
     parser.add_argument(
-        '-e','--loop_refinement', type=str,
+        '-e','--loop_refinement', default="slow", type=str,
         help='Type of MODELLER loop refinement to apply. \
             Available options are: very_fast,fast,slow,very_slow,slow_large.',
     )
