@@ -225,6 +225,12 @@ def cmd_run_wrapper():
         '-o','--output-path', default='./',
         help='Output folder. Defaults to the current working directory.',
     )
+
+    parser.add_argument(
+        '-e','--loop_refinement', type=str,
+        help='Type of MODELLER loop refinement to apply. \
+            Available options are: very_fast,fast,slow,very_slow,slow_large.',
+    )
     
     parser.add_argument(
         '-r', '--restraints-stdev', default=False,
@@ -260,4 +266,5 @@ def cmd_run_wrapper():
         allele_name_col=args.allele_name_column, anchors_col=args.anchors_column,
         template_col=args.template_column, n_loop_models=args.loop_models, 
         collective_output_dir=args.output_path, clip_C_domain=args.clip_C_domain,
-        restraints_stdev=args.restraints_stdev, use_netmhcpan=args.use_netmhcpan)
+        loop_refinement=args.loop_refinement, restraints_stdev=args.restraints_stdev,
+        use_netmhcpan=args.use_netmhcpan)
